@@ -7,6 +7,7 @@ import { TrendChart } from "@/components/TrendChart";
 import { useApp } from "@/lib/store";
 import { evaluate, METRIC_META, type Metric } from "@/lib/health-data";
 import { Button } from "@/components/ui/button";
+import { useHealthAlerts } from "@/hooks/use-health-alerts";
 import { format } from "date-fns";
 
 export const Route = createFileRoute("/dashboard")({
