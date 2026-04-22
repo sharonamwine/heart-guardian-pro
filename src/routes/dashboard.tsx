@@ -24,6 +24,8 @@ function Dashboard() {
   const { user, readings, logout } = useApp();
   const navigate = useNavigate();
 
+  useHealthAlerts();
+
   useEffect(() => {
     if (!user) navigate({ to: "/login" });
   }, [user, navigate]);
