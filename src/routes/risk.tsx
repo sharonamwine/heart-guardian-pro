@@ -7,6 +7,8 @@ import { AdherenceRing } from "@/components/AdherenceRing";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { computeRisk, levelLabel, type DoseRow, type EventRow } from "@/lib/adherence";
+import { generateRiskAssessment } from "@/lib/risk.functions";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/risk")({
@@ -45,31 +47,20 @@ function RiskPage() {
 
   const risk = computeRisk(new Date(), doses, events);
 
+  const runAssessment = useServerFn(generateRiskAssessment);
+
   const generateAI = async () => {
     if (!user) return;
     setAiBusy(true);
-    // Save rule-based snapshot (AI guidance is simulated client-side for now)
-    const factors = risk.factors.map((f) => ({ label: f.label, weight: f.weight }));
-    const guidance = buildCoaching(risk);
-    const { error } = await supabase.from("risk_assessments").insert({
-      user_id: user.id,
-      score: risk.score,
-      level: risk.level,
-      adherence_7d: risk.adherence7d,
-      adherence_30d: risk.adherence30d,
-      missed_7d: risk.missed7d,
-      late_7d: risk.late7d,
-      factors,
-      ai_guidance: guidance,
-      ai_summary: `${levelLabel(risk.level)} · score ${risk.score}`,
-    });
-    setAiBusy(false);
-    if (error) {
-      toast.error(error.message);
-      return;
+    try {
+      const res = await runAssessment();
+      setAiGuidance(res.guidance);
+      toast.success("AI assessment ready");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to generate assessment");
+    } finally {
+      setAiBusy(false);
     }
-    setAiGuidance(guidance);
-    toast.success("Risk assessment saved");
   };
 
   const gradient =
