@@ -13,8 +13,10 @@ import { Route as RiskRouteImport } from './routes/risk'
 import { Route as ProvidersRouteImport } from './routes/providers'
 import { Route as MedicationsRouteImport } from './routes/medications'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as DevicesRouteImport } from './routes/devices'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicIotDoseRouteImport } from './routes/api.public.iot.dose'
 
 const RiskRoute = RiskRouteImport.update({
   id: '/risk',
@@ -36,6 +38,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DevicesRoute = DevicesRouteImport.update({
+  id: '/devices',
+  path: '/devices',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -46,60 +53,85 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicIotDoseRoute = ApiPublicIotDoseRouteImport.update({
+  id: '/api/public/iot/dose',
+  path: '/api/public/iot/dose',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/devices': typeof DevicesRoute
   '/login': typeof LoginRoute
   '/medications': typeof MedicationsRoute
   '/providers': typeof ProvidersRoute
   '/risk': typeof RiskRoute
+  '/api/public/iot/dose': typeof ApiPublicIotDoseRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/devices': typeof DevicesRoute
   '/login': typeof LoginRoute
   '/medications': typeof MedicationsRoute
   '/providers': typeof ProvidersRoute
   '/risk': typeof RiskRoute
+  '/api/public/iot/dose': typeof ApiPublicIotDoseRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/devices': typeof DevicesRoute
   '/login': typeof LoginRoute
   '/medications': typeof MedicationsRoute
   '/providers': typeof ProvidersRoute
   '/risk': typeof RiskRoute
+  '/api/public/iot/dose': typeof ApiPublicIotDoseRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/devices'
     | '/login'
     | '/medications'
     | '/providers'
     | '/risk'
+    | '/api/public/iot/dose'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/login' | '/medications' | '/providers' | '/risk'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/devices'
+    | '/login'
+    | '/medications'
+    | '/providers'
+    | '/risk'
+    | '/api/public/iot/dose'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
+    | '/devices'
     | '/login'
     | '/medications'
     | '/providers'
     | '/risk'
+    | '/api/public/iot/dose'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
+  DevicesRoute: typeof DevicesRoute
   LoginRoute: typeof LoginRoute
   MedicationsRoute: typeof MedicationsRoute
   ProvidersRoute: typeof ProvidersRoute
   RiskRoute: typeof RiskRoute
+  ApiPublicIotDoseRoute: typeof ApiPublicIotDoseRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -132,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/devices': {
+      id: '/devices'
+      path: '/devices'
+      fullPath: '/devices'
+      preLoaderRoute: typeof DevicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -146,17 +185,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/iot/dose': {
+      id: '/api/public/iot/dose'
+      path: '/api/public/iot/dose'
+      fullPath: '/api/public/iot/dose'
+      preLoaderRoute: typeof ApiPublicIotDoseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
+  DevicesRoute: DevicesRoute,
   LoginRoute: LoginRoute,
   MedicationsRoute: MedicationsRoute,
   ProvidersRoute: ProvidersRoute,
   RiskRoute: RiskRoute,
+  ApiPublicIotDoseRoute: ApiPublicIotDoseRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
