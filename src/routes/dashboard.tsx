@@ -1,128 +1,251 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo } from "react";
-import { AlertTriangle, LogOut, Plus } from "lucide-react";
+import { useEffect, useState, useCallback } from "react";
+import { Check, Clock, LogOut, Pill, Plus, ShieldCheck } from "lucide-react";
 import { MobileShell } from "@/components/MobileShell";
-import { MetricCard } from "@/components/MetricCard";
-import { TrendChart } from "@/components/TrendChart";
-import { useApp } from "@/lib/store";
-import { evaluate, METRIC_META, type Metric } from "@/lib/health-data";
+import { AdherenceRing } from "@/components/AdherenceRing";
 import { Button } from "@/components/ui/button";
-import { useHealthAlerts } from "@/hooks/use-health-alerts";
-import { format } from "date-fns";
+import { useAuth } from "@/lib/auth";
+import { supabase } from "@/integrations/supabase/client";
+import { ensureScheduledDoses } from "@/lib/schedule";
+import { computeRisk, type DoseRow, type EventRow, levelLabel } from "@/lib/adherence";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard")({
-  head: () => ({
-    meta: [
-      { title: "Dashboard — VitalSense" },
-      { name: "description", content: "Your real-time vitals dashboard with trends and alerts." },
-    ],
-  }),
+  head: () => ({ meta: [{ title: "Dashboard — AdhereAI" }] }),
   component: Dashboard,
 });
 
-function Dashboard() {
-  const { user, readings, logout } = useApp();
-  const navigate = useNavigate();
+type MedMap = Record<string, { name: string; dosage: string }>;
 
-  useHealthAlerts();
+function Dashboard() {
+  const { user, loading, signOut } = useAuth();
+  const navigate = useNavigate();
+  const [doses, setDoses] = useState<DoseRow[]>([]);
+  const [events, setEvents] = useState<EventRow[]>([]);
+  const [meds, setMeds] = useState<MedMap>({});
+  const [profile, setProfile] = useState<{ full_name: string | null } | null>(null);
 
   useEffect(() => {
-    if (!user) navigate({ to: "/login" });
-  }, [user, navigate]);
+    if (!loading && !user) navigate({ to: "/login" });
+  }, [loading, user, navigate]);
 
-  const latest = useMemo(() => {
-    const out: Partial<Record<Metric, (typeof readings)[number]>> = {};
-    for (const r of readings) {
-      if (!out[r.metric] || r.timestamp > out[r.metric]!.timestamp) out[r.metric] = r;
+  const load = useCallback(async () => {
+    if (!user) return;
+    await ensureScheduledDoses(user.id);
+    const since = new Date(Date.now() - 35 * 86_400_000).toISOString();
+    const [dosesRes, eventsRes, medsRes, profRes] = await Promise.all([
+      supabase
+        .from("scheduled_doses")
+        .select("id,scheduled_at,status,medication_id")
+        .eq("user_id", user.id)
+        .gte("scheduled_at", since)
+        .order("scheduled_at"),
+      supabase
+        .from("dose_events")
+        .select("scheduled_dose_id,medication_id,taken_at,minutes_late")
+        .eq("user_id", user.id)
+        .gte("taken_at", since),
+      supabase.from("medications").select("id,name,dosage").eq("user_id", user.id),
+      supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle(),
+    ]);
+    setDoses((dosesRes.data ?? []) as DoseRow[]);
+    setEvents((eventsRes.data ?? []) as EventRow[]);
+    const m: MedMap = {};
+    for (const r of medsRes.data ?? []) m[r.id] = { name: r.name, dosage: r.dosage };
+    setMeds(m);
+    setProfile(profRes.data ?? null);
+  }, [user]);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const now = new Date();
+  const risk = computeRisk(now, doses, events);
+
+  // Today's schedule
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+  const endOfDay = new Date(startOfDay.getTime() + 86_400_000);
+  const takenDoseIds = new Set(events.map((e) => e.scheduled_dose_id).filter(Boolean) as string[]);
+  const todays = doses
+    .filter((d) => {
+      const t = new Date(d.scheduled_at);
+      return t >= startOfDay && t < endOfDay;
+    })
+    .map((d) => ({ ...d, taken: takenDoseIds.has(d.id) }));
+
+  const markTaken = async (dose: DoseRow) => {
+    if (!user) return;
+    const scheduledAt = new Date(dose.scheduled_at);
+    const minutesLate = Math.max(0, Math.round((Date.now() - scheduledAt.getTime()) / 60000));
+    const { error } = await supabase.from("dose_events").insert({
+      user_id: user.id,
+      medication_id: dose.medication_id,
+      scheduled_dose_id: dose.id,
+      taken_at: new Date().toISOString(),
+      source: "manual",
+      minutes_late: minutesLate,
+    });
+    if (error) {
+      toast.error(error.message);
+      return;
     }
-    return out;
-  }, [readings]);
+    toast.success("Dose logged");
+    await load();
+  };
 
-  const alerts = useMemo(
-    () =>
-      readings
-        .filter((r) => evaluate(r) !== "normal")
-        .slice(0, 3),
-    [readings],
-  );
-
-  if (!user) return null;
+  const riskGradient =
+    risk.level === "low" ? "bg-gradient-risk-low" : risk.level === "medium" ? "bg-gradient-risk-med" : "bg-gradient-risk-high";
 
   return (
     <MobileShell>
-      <div className="px-5 pt-12 pb-6">
+      <header className="bg-gradient-hero text-white px-5 pt-10 pb-8 rounded-b-[1.75rem]">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-muted-foreground">Hello,</p>
-            <h1 className="font-display text-2xl font-bold capitalize">{user.name}</h1>
+            <p className="text-white/70 text-xs">Welcome back</p>
+            <h1 className="font-display text-xl font-bold">
+              {profile?.full_name ?? user?.email?.split("@")[0] ?? "Friend"}
+            </h1>
           </div>
           <button
-            onClick={() => {
-              logout();
+            onClick={async () => {
+              await signOut();
               navigate({ to: "/" });
             }}
-            className="size-10 rounded-xl border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-smooth"
+            className="size-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-smooth"
             aria-label="Sign out"
           >
             <LogOut className="size-4" />
           </button>
         </div>
 
-        {alerts.length > 0 && (
-          <div className="mt-5 rounded-2xl border border-destructive/30 bg-destructive/5 p-4 flex items-start gap-3">
-            <div className="size-8 rounded-lg bg-destructive/15 flex items-center justify-center text-destructive shrink-0 animate-pulse-ring">
-              <AlertTriangle className="size-4" />
+        <div className="mt-6 flex items-center gap-5">
+          <AdherenceRing value={risk.adherence7d} label="7-day" sublabel="adherence" />
+          <div className="flex-1 space-y-2">
+            <div className={`${riskGradient} rounded-2xl p-3 shadow-soft`}>
+              <div className="flex items-center gap-2 text-white">
+                <ShieldCheck className="size-4" />
+                <span className="text-xs font-semibold uppercase tracking-wide">
+                  {levelLabel(risk.level)}
+                </span>
+              </div>
+              <p className="text-white font-display font-bold text-2xl mt-1">{risk.score}<span className="text-sm font-medium text-white/80">/100</span></p>
             </div>
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-destructive">
-                {alerts.length} reading{alerts.length > 1 ? "s" : ""} need attention
-              </p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Review your latest abnormal values below.
-              </p>
-            </div>
-            <Link to="/contacts" className="text-xs font-semibold text-destructive">
-              SOS
+            <Link
+              to="/risk"
+              className="block text-center text-xs text-white/80 hover:text-white transition-smooth"
+            >
+              View details →
             </Link>
           </div>
+        </div>
+      </header>
+
+      <section className="px-5 pt-6">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-display text-lg font-bold">Today's doses</h2>
+          <Link to="/medications" className="text-xs text-primary font-medium">Manage</Link>
+        </div>
+
+        {todays.length === 0 ? (
+          <EmptyToday />
+        ) : (
+          <ul className="space-y-2">
+            {todays.map((d) => {
+              const med = meds[d.medication_id];
+              const t = new Date(d.scheduled_at);
+              const timeStr = t.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+              const isPast = t.getTime() < Date.now();
+              return (
+                <li
+                  key={d.id}
+                  className="bg-card border border-border rounded-2xl p-3 flex items-center gap-3 shadow-soft"
+                >
+                  <div className="size-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                    <Pill className="size-5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold truncate">{med?.name ?? "Medication"}</p>
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Clock className="size-3" /> {timeStr} · {med?.dosage ?? ""}
+                    </p>
+                  </div>
+                  {d.taken ? (
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-success">
+                      <Check className="size-4" /> Taken
+                    </span>
+                  ) : (
+                    <Button
+                      size="sm"
+                      onClick={() => markTaken(d)}
+                      className={`rounded-xl h-9 ${isPast ? "bg-warning text-warning-foreground hover:bg-warning/90" : "bg-primary hover:bg-primary/90"}`}
+                    >
+                      {isPast ? "Log late" : "Take"}
+                    </Button>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         )}
-
-        <div className="mt-6 grid grid-cols-1 gap-4">
-          <MetricCard metric="glucose" reading={latest.glucose} />
-          <div className="grid grid-cols-2 gap-4">
-            <MetricCard metric="heart" reading={latest.heart} />
-            <MetricCard metric="pressure" reading={latest.pressure} />
-          </div>
-        </div>
-
-        <div className="mt-8 space-y-5">
-          {(["glucose", "heart", "pressure"] as Metric[]).map((m) => (
-            <div key={m} className="rounded-2xl border border-border bg-card p-4 shadow-soft">
-              <div className="flex items-center justify-between mb-2">
-                <div>
-                  <p className="font-display font-semibold">{METRIC_META[m].label}</p>
-                  <p className="text-xs text-muted-foreground">Last 14 days</p>
-                </div>
-                {latest[m] && (
-                  <p className="text-xs text-muted-foreground">
-                    {format(latest[m]!.timestamp, "MMM d, HH:mm")}
-                  </p>
-                )}
-              </div>
-              <TrendChart metric={m} readings={readings} />
-            </div>
-          ))}
-        </div>
 
         <Button
           asChild
-          className="mt-6 w-full h-12 rounded-xl bg-gradient-primary hover:opacity-90 shadow-glow font-semibold"
+          variant="outline"
+          className="w-full mt-4 h-11 rounded-xl border-dashed"
         >
-          <Link to="/log">
-            <Plus className="size-4" /> Log a new reading
+          <Link to="/medications">
+            <Plus className="size-4 mr-1" /> Add medication
           </Link>
         </Button>
-      </div>
+      </section>
+
+      <section className="px-5 pt-8 pb-4">
+        <h2 className="font-display text-lg font-bold mb-3">This week</h2>
+        <div className="grid grid-cols-3 gap-2">
+          <Stat label="Taken" value={`${Math.round(risk.adherence7d * 100)}%`} tone="primary" />
+          <Stat label="Missed" value={risk.missed7d} tone={risk.missed7d > 0 ? "destructive" : "muted"} />
+          <Stat label="Late" value={risk.late7d} tone={risk.late7d > 0 ? "warning" : "muted"} />
+        </div>
+      </section>
     </MobileShell>
+  );
+}
+
+function EmptyToday() {
+  return (
+    <div className="rounded-2xl border border-dashed border-border p-6 text-center">
+      <Pill className="size-6 text-muted-foreground mx-auto" />
+      <p className="font-semibold mt-2">No doses scheduled today</p>
+      <p className="text-xs text-muted-foreground mt-1">
+        Add a medication to start tracking your treatment.
+      </p>
+    </div>
+  );
+}
+
+function Stat({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string | number;
+  tone: "primary" | "destructive" | "warning" | "muted";
+}) {
+  const bg =
+    tone === "primary"
+      ? "bg-primary/10 text-primary"
+      : tone === "destructive"
+      ? "bg-destructive/10 text-destructive"
+      : tone === "warning"
+      ? "bg-warning/15 text-warning-foreground"
+      : "bg-muted text-muted-foreground";
+  return (
+    <div className={`rounded-2xl p-3 ${bg}`}>
+      <p className="font-display text-2xl font-bold tabular-nums">{value}</p>
+      <p className="text-[11px] font-medium mt-0.5">{label}</p>
+    </div>
   );
 }

@@ -9,16 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as RemindersRouteImport } from './routes/reminders'
+import { Route as RiskRouteImport } from './routes/risk'
+import { Route as ProvidersRouteImport } from './routes/providers'
+import { Route as MedicationsRouteImport } from './routes/medications'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as LogRouteImport } from './routes/log'
 import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as ContactsRouteImport } from './routes/contacts'
 import { Route as IndexRouteImport } from './routes/index'
 
-const RemindersRoute = RemindersRouteImport.update({
-  id: '/reminders',
-  path: '/reminders',
+const RiskRoute = RiskRouteImport.update({
+  id: '/risk',
+  path: '/risk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProvidersRoute = ProvidersRouteImport.update({
+  id: '/providers',
+  path: '/providers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MedicationsRoute = MedicationsRouteImport.update({
+  id: '/medications',
+  path: '/medications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -26,19 +36,9 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LogRoute = LogRouteImport.update({
-  id: '/log',
-  path: '/log',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactsRoute = ContactsRouteImport.update({
-  id: '/contacts',
-  path: '/contacts',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -49,60 +49,80 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/contacts': typeof ContactsRoute
   '/dashboard': typeof DashboardRoute
-  '/log': typeof LogRoute
   '/login': typeof LoginRoute
-  '/reminders': typeof RemindersRoute
+  '/medications': typeof MedicationsRoute
+  '/providers': typeof ProvidersRoute
+  '/risk': typeof RiskRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/contacts': typeof ContactsRoute
   '/dashboard': typeof DashboardRoute
-  '/log': typeof LogRoute
   '/login': typeof LoginRoute
-  '/reminders': typeof RemindersRoute
+  '/medications': typeof MedicationsRoute
+  '/providers': typeof ProvidersRoute
+  '/risk': typeof RiskRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/contacts': typeof ContactsRoute
   '/dashboard': typeof DashboardRoute
-  '/log': typeof LogRoute
   '/login': typeof LoginRoute
-  '/reminders': typeof RemindersRoute
+  '/medications': typeof MedicationsRoute
+  '/providers': typeof ProvidersRoute
+  '/risk': typeof RiskRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/contacts' | '/dashboard' | '/log' | '/login' | '/reminders'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/medications'
+    | '/providers'
+    | '/risk'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contacts' | '/dashboard' | '/log' | '/login' | '/reminders'
+  to: '/' | '/dashboard' | '/login' | '/medications' | '/providers' | '/risk'
   id:
     | '__root__'
     | '/'
-    | '/contacts'
     | '/dashboard'
-    | '/log'
     | '/login'
-    | '/reminders'
+    | '/medications'
+    | '/providers'
+    | '/risk'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ContactsRoute: typeof ContactsRoute
   DashboardRoute: typeof DashboardRoute
-  LogRoute: typeof LogRoute
   LoginRoute: typeof LoginRoute
-  RemindersRoute: typeof RemindersRoute
+  MedicationsRoute: typeof MedicationsRoute
+  ProvidersRoute: typeof ProvidersRoute
+  RiskRoute: typeof RiskRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/reminders': {
-      id: '/reminders'
-      path: '/reminders'
-      fullPath: '/reminders'
-      preLoaderRoute: typeof RemindersRouteImport
+    '/risk': {
+      id: '/risk'
+      path: '/risk'
+      fullPath: '/risk'
+      preLoaderRoute: typeof RiskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/providers': {
+      id: '/providers'
+      path: '/providers'
+      fullPath: '/providers'
+      preLoaderRoute: typeof ProvidersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/medications': {
+      id: '/medications'
+      path: '/medications'
+      fullPath: '/medications'
+      preLoaderRoute: typeof MedicationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -112,25 +132,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/log': {
-      id: '/log'
-      path: '/log'
-      fullPath: '/log'
-      preLoaderRoute: typeof LogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contacts': {
-      id: '/contacts'
-      path: '/contacts'
-      fullPath: '/contacts'
-      preLoaderRoute: typeof ContactsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -145,11 +151,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ContactsRoute: ContactsRoute,
   DashboardRoute: DashboardRoute,
-  LogRoute: LogRoute,
   LoginRoute: LoginRoute,
-  RemindersRoute: RemindersRoute,
+  MedicationsRoute: MedicationsRoute,
+  ProvidersRoute: ProvidersRoute,
+  RiskRoute: RiskRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
