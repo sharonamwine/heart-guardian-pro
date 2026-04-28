@@ -14,6 +14,78 @@ export type Database = {
   }
   public: {
     Tables: {
+      alert_log: {
+        Row: {
+          channel: string
+          created_at: string
+          error: string | null
+          id: string
+          kind: string
+          message: string | null
+          patient_id: string
+          recipient: string
+          scheduled_dose_id: string | null
+          status: string
+        }
+        Insert: {
+          channel: string
+          created_at?: string
+          error?: string | null
+          id?: string
+          kind: string
+          message?: string | null
+          patient_id: string
+          recipient: string
+          scheduled_dose_id?: string | null
+          status?: string
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          error?: string | null
+          id?: string
+          kind?: string
+          message?: string | null
+          patient_id?: string
+          recipient?: string
+          scheduled_dose_id?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      care_invites: {
+        Row: {
+          code: string
+          created_at: string
+          expires_at: string
+          id: string
+          patient_id: string
+          redeemed_at: string | null
+          redeemed_by: string | null
+          relationship: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          patient_id: string
+          redeemed_at?: string | null
+          redeemed_by?: string | null
+          relationship: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          patient_id?: string
+          redeemed_at?: string | null
+          redeemed_by?: string | null
+          relationship?: string
+        }
+        Relationships: []
+      }
       dose_events: {
         Row: {
           created_at: string
@@ -137,6 +209,33 @@ export type Database = {
         }
         Relationships: []
       }
+      patient_links: {
+        Row: {
+          alerts_enabled: boolean
+          clinician_id: string
+          created_at: string
+          id: string
+          patient_id: string
+          relationship: string
+        }
+        Insert: {
+          alerts_enabled?: boolean
+          clinician_id: string
+          created_at?: string
+          id?: string
+          patient_id: string
+          relationship: string
+        }
+        Update: {
+          alerts_enabled?: boolean
+          clinician_id?: string
+          created_at?: string
+          id?: string
+          patient_id?: string
+          relationship?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           baseline_cd4: number | null
@@ -146,6 +245,8 @@ export type Database = {
           diagnosis_date: string | null
           full_name: string | null
           id: string
+          phone: string | null
+          timezone: string | null
           updated_at: string
         }
         Insert: {
@@ -156,6 +257,8 @@ export type Database = {
           diagnosis_date?: string | null
           full_name?: string | null
           id: string
+          phone?: string | null
+          timezone?: string | null
           updated_at?: string
         }
         Update: {
@@ -166,6 +269,8 @@ export type Database = {
           diagnosis_date?: string | null
           full_name?: string | null
           id?: string
+          phone?: string | null
+          timezone?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -319,9 +424,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_linked_clinician: { Args: { _patient_id: string }; Returns: boolean }
     }
     Enums: {
-      app_role: "patient" | "provider" | "admin"
+      app_role: "patient" | "provider" | "admin" | "doctor" | "caregiver"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -449,7 +555,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["patient", "provider", "admin"],
+      app_role: ["patient", "provider", "admin", "doctor", "caregiver"],
     },
   },
 } as const
