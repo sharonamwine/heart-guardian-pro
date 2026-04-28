@@ -1,43 +1,72 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Activity, Mail, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useApp } from "@/lib/store";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Sign in — VitalSense" },
-      { name: "description", content: "Sign in to your VitalSense health monitoring account." },
+      { title: "Sign in — AdhereAI" },
+      { name: "description", content: "Sign in to your AdhereAI HIV support account." },
     ],
   }),
   component: LoginPage,
 });
 
 function LoginPage() {
-  const { login } = useApp();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [email, setEmail] = useState("alex@demo.com");
+  const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [password, setPassword] = useState("demo1234");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (!loading && user) navigate({ to: "/dashboard" });
+  }, [user, loading, navigate]);
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) return;
-    login(email, mode === "signup" ? name || email.split("@")[0] : undefined);
-    navigate({ to: "/dashboard" });
+    setBusy(true);
+    try {
+      if (mode === "signup") {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/dashboard`,
+            data: { full_name: name || email.split("@")[0] },
+          },
+        });
+        if (error) throw error;
+        toast.success("Account created. You're signed in.");
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+      }
+      navigate({ to: "/dashboard" });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Authentication failed";
+      toast.error(msg);
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-background flex justify-center">
-      <div className="w-full max-w-[440px] min-h-screen flex flex-col px-6 pt-14 pb-10">
+      <div className="w-full max-w-[480px] min-h-screen flex flex-col px-6 pt-14 pb-10">
         <div className="flex items-center gap-2">
-          <div className="size-10 rounded-xl bg-gradient-primary flex items-center justify-center text-primary-foreground shadow-glow">
+          <div className="size-10 rounded-xl bg-gradient-care flex items-center justify-center text-primary-foreground shadow-glow">
             <Activity className="size-5" />
           </div>
-          <span className="font-display font-semibold text-lg">VitalSense</span>
+          <span className="font-display font-semibold text-lg">AdhereAI</span>
         </div>
 
         <div className="mt-12">
@@ -46,8 +75,8 @@ function LoginPage() {
           </h1>
           <p className="text-muted-foreground mt-2">
             {mode === "signin"
-              ? "Sign in to continue tracking your health."
-              : "Start monitoring your vitals in seconds."}
+              ? "Sign in to continue your treatment support."
+              : "Start tracking your treatment with privacy-first care."}
           </p>
         </div>
 
@@ -58,7 +87,7 @@ function LoginPage() {
               <Input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Alex Morgan"
+                placeholder="Your name"
                 className="h-12 rounded-xl"
               />
             </div>
@@ -72,6 +101,7 @@ function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="h-12 rounded-xl pl-10"
+                required
               />
             </div>
           </div>
@@ -84,15 +114,18 @@ function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="h-12 rounded-xl pl-10"
+                minLength={6}
+                required
               />
             </div>
           </div>
 
           <Button
             type="submit"
-            className="w-full h-12 rounded-xl bg-gradient-primary hover:opacity-90 shadow-glow font-semibold mt-6"
+            disabled={busy}
+            className="w-full h-12 rounded-xl bg-gradient-care hover:opacity-90 shadow-glow font-semibold mt-6"
           >
-            {mode === "signin" ? "Sign in" : "Create account"}
+            {busy ? "Please wait…" : mode === "signin" ? "Sign in" : "Create account"}
           </Button>
         </form>
 
@@ -113,7 +146,7 @@ function LoginPage() {
         </button>
 
         <p className="mt-auto text-center text-xs text-muted-foreground">
-          Demo mode — credentials aren't validated.
+          By continuing you agree to keep your credentials private.
         </p>
       </div>
     </div>

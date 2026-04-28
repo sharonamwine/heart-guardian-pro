@@ -1,5 +1,5 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
-import { AppProvider } from "@/lib/store";
+import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
@@ -31,12 +31,12 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { name: "theme-color", content: "#0c2340" },
-      { title: "VitalSense — Smart Health Monitoring" },
+      { name: "theme-color", content: "#1a3a6e" },
+      { title: "AdhereAI — HIV Support & Adherence" },
       {
         name: "description",
         content:
-          "Track blood sugar, heart rate, and blood pressure with real-time alerts and emergency contacts.",
+          "Smart HIV support with IoT medication monitoring, adherence tracking, risk assessment, and automated treatment support.",
       },
     ],
     links: [
@@ -70,9 +70,9 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   return (
-    <AppProvider>
+    <AuthProvider>
       <Outlet />
       <Toaster position="top-center" richColors closeButton />
-    </AppProvider>
+    </AuthProvider>
   );
 }
