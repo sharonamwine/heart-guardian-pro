@@ -14,16 +14,314 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      dose_events: {
+        Row: {
+          created_at: string
+          device_id: string | null
+          id: string
+          medication_id: string | null
+          minutes_late: number | null
+          note: string | null
+          scheduled_dose_id: string | null
+          source: string
+          taken_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          medication_id?: string | null
+          minutes_late?: number | null
+          note?: string | null
+          scheduled_dose_id?: string | null
+          source?: string
+          taken_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          medication_id?: string | null
+          minutes_late?: number | null
+          note?: string | null
+          scheduled_dose_id?: string | null
+          source?: string
+          taken_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dose_events_medication_id_fkey"
+            columns: ["medication_id"]
+            isOneToOne: false
+            referencedRelation: "medications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dose_events_scheduled_dose_id_fkey"
+            columns: ["scheduled_dose_id"]
+            isOneToOne: false
+            referencedRelation: "scheduled_doses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      iot_devices: {
+        Row: {
+          active: boolean
+          created_at: string
+          device_token: string
+          id: string
+          last_seen_at: string | null
+          name: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          device_token: string
+          id?: string
+          last_seen_at?: string | null
+          name: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          device_token?: string
+          id?: string
+          last_seen_at?: string | null
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      medications: {
+        Row: {
+          active: boolean
+          created_at: string
+          dosage: string
+          id: string
+          instructions: string | null
+          name: string
+          schedule_times: string[]
+          start_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          dosage: string
+          id?: string
+          instructions?: string | null
+          name: string
+          schedule_times?: string[]
+          start_date?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          dosage?: string
+          id?: string
+          instructions?: string | null
+          name?: string
+          schedule_times?: string[]
+          start_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          baseline_cd4: number | null
+          baseline_viral_load: number | null
+          created_at: string
+          date_of_birth: string | null
+          diagnosis_date: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          baseline_cd4?: number | null
+          baseline_viral_load?: number | null
+          created_at?: string
+          date_of_birth?: string | null
+          diagnosis_date?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          baseline_cd4?: number | null
+          baseline_viral_load?: number | null
+          created_at?: string
+          date_of_birth?: string | null
+          diagnosis_date?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      providers: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          organization: string | null
+          phone: string | null
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          organization?: string | null
+          phone?: string | null
+          role: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          organization?: string | null
+          phone?: string | null
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      risk_assessments: {
+        Row: {
+          adherence_30d: number | null
+          adherence_7d: number | null
+          ai_guidance: string | null
+          ai_summary: string | null
+          created_at: string
+          factors: Json
+          id: string
+          late_7d: number | null
+          level: string
+          missed_7d: number | null
+          score: number
+          user_id: string
+        }
+        Insert: {
+          adherence_30d?: number | null
+          adherence_7d?: number | null
+          ai_guidance?: string | null
+          ai_summary?: string | null
+          created_at?: string
+          factors?: Json
+          id?: string
+          late_7d?: number | null
+          level: string
+          missed_7d?: number | null
+          score: number
+          user_id: string
+        }
+        Update: {
+          adherence_30d?: number | null
+          adherence_7d?: number | null
+          ai_guidance?: string | null
+          ai_summary?: string | null
+          created_at?: string
+          factors?: Json
+          id?: string
+          late_7d?: number | null
+          level?: string
+          missed_7d?: number | null
+          score?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      scheduled_doses: {
+        Row: {
+          created_at: string
+          id: string
+          medication_id: string
+          scheduled_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          medication_id: string
+          scheduled_at: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          medication_id?: string
+          scheduled_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduled_doses_medication_id_fkey"
+            columns: ["medication_id"]
+            isOneToOne: false
+            referencedRelation: "medications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "patient" | "provider" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +448,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["patient", "provider", "admin"],
+    },
   },
 } as const
