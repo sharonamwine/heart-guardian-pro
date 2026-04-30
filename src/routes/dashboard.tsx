@@ -214,6 +214,33 @@ function Dashboard() {
           <Stat label="Missed" value={risk.missed7d} tone={risk.missed7d > 0 ? "destructive" : "muted"} />
           <Stat label="Late" value={risk.late7d} tone={risk.late7d > 0 ? "warning" : "muted"} />
         </div>
+
+        <div className="grid grid-cols-2 gap-2 mt-3">
+          <Link
+            to="/care-team"
+            className="bg-card border border-border rounded-2xl p-3 flex items-center gap-2 hover:border-primary/40 transition-smooth"
+          >
+            <div className="size-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+              <Users className="size-4" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold">Care team</p>
+              <p className="text-[10px] text-muted-foreground">Invite doctor</p>
+            </div>
+          </Link>
+          <Link
+            to="/devices"
+            className="bg-card border border-border rounded-2xl p-3 flex items-center gap-2 hover:border-primary/40 transition-smooth"
+          >
+            <div className="size-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+              <ShieldCheck className="size-4" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold">Pillbox</p>
+              <p className="text-[10px] text-muted-foreground">IoT device</p>
+            </div>
+          </Link>
+        </div>
       </section>
     </MobileShell>
   );
