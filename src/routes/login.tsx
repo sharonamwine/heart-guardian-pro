@@ -85,15 +85,41 @@ function LoginPage() {
 
         <form onSubmit={submit} className="mt-10 space-y-4">
           {mode === "signup" && (
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Full name</label>
-              <Input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Your name"
-                className="h-12 rounded-xl"
-              />
-            </div>
+            <>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">I am a…</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {([
+                    { v: "patient", label: "Patient", Icon: HeartPulse },
+                    { v: "doctor", label: "Doctor", Icon: Stethoscope },
+                    { v: "caregiver", label: "Caregiver", Icon: Users },
+                  ] as const).map(({ v, label, Icon }) => (
+                    <button
+                      type="button"
+                      key={v}
+                      onClick={() => setRole(v)}
+                      className={`rounded-xl border p-3 flex flex-col items-center gap-1 transition-smooth ${
+                        role === v
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-border hover:border-primary/40"
+                      }`}
+                    >
+                      <Icon className="size-4" />
+                      <span className="text-xs font-medium">{label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Full name</label>
+                <Input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Your name"
+                  className="h-12 rounded-xl"
+                />
+              </div>
+            </>
           )}
           <div className="space-y-2">
             <label className="text-sm font-medium">Email</label>
