@@ -38,6 +38,15 @@ export const Route = createRootRoute({
         content:
           "Smart HIV support with IoT medication monitoring, adherence tracking, risk assessment, and automated treatment support.",
       },
+      { property: "og:title", content: "AdhereAI — HIV Support & Adherence" },
+      { name: "twitter:title", content: "AdhereAI — HIV Support & Adherence" },
+      { name: "description", content: "Smart HIV Support System: Mobile & web app for HIV treatment management with IoT monitoring." },
+      { property: "og:description", content: "Smart HIV Support System: Mobile & web app for HIV treatment management with IoT monitoring." },
+      { name: "twitter:description", content: "Smart HIV Support System: Mobile & web app for HIV treatment management with IoT monitoring." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b22fb755-b1d0-4455-8593-158ae0c1f7c5/id-preview-17465132--61011d28-15aa-4918-8a57-696b51e42a92.lovable.app-1777545846816.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b22fb755-b1d0-4455-8593-158ae0c1f7c5/id-preview-17465132--61011d28-15aa-4918-8a57-696b51e42a92.lovable.app-1777545846816.png" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:type", content: "website" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
