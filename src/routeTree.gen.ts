@@ -13,8 +13,11 @@ import { Route as RiskRouteImport } from './routes/risk'
 import { Route as ProvidersRouteImport } from './routes/providers'
 import { Route as MedicationsRouteImport } from './routes/medications'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as JoinRouteImport } from './routes/join'
 import { Route as DevicesRouteImport } from './routes/devices'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ClinicianRouteImport } from './routes/clinician'
+import { Route as CareTeamRouteImport } from './routes/care-team'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiPublicIotDoseRouteImport } from './routes/api.public.iot.dose'
 
@@ -38,6 +41,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DevicesRoute = DevicesRouteImport.update({
   id: '/devices',
   path: '/devices',
@@ -46,6 +54,16 @@ const DevicesRoute = DevicesRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClinicianRoute = ClinicianRouteImport.update({
+  id: '/clinician',
+  path: '/clinician',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CareTeamRoute = CareTeamRouteImport.update({
+  id: '/care-team',
+  path: '/care-team',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -61,8 +79,11 @@ const ApiPublicIotDoseRoute = ApiPublicIotDoseRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/care-team': typeof CareTeamRoute
+  '/clinician': typeof ClinicianRoute
   '/dashboard': typeof DashboardRoute
   '/devices': typeof DevicesRoute
+  '/join': typeof JoinRoute
   '/login': typeof LoginRoute
   '/medications': typeof MedicationsRoute
   '/providers': typeof ProvidersRoute
@@ -71,8 +92,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/care-team': typeof CareTeamRoute
+  '/clinician': typeof ClinicianRoute
   '/dashboard': typeof DashboardRoute
   '/devices': typeof DevicesRoute
+  '/join': typeof JoinRoute
   '/login': typeof LoginRoute
   '/medications': typeof MedicationsRoute
   '/providers': typeof ProvidersRoute
@@ -82,8 +106,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/care-team': typeof CareTeamRoute
+  '/clinician': typeof ClinicianRoute
   '/dashboard': typeof DashboardRoute
   '/devices': typeof DevicesRoute
+  '/join': typeof JoinRoute
   '/login': typeof LoginRoute
   '/medications': typeof MedicationsRoute
   '/providers': typeof ProvidersRoute
@@ -94,8 +121,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/care-team'
+    | '/clinician'
     | '/dashboard'
     | '/devices'
+    | '/join'
     | '/login'
     | '/medications'
     | '/providers'
@@ -104,8 +134,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/care-team'
+    | '/clinician'
     | '/dashboard'
     | '/devices'
+    | '/join'
     | '/login'
     | '/medications'
     | '/providers'
@@ -114,8 +147,11 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/care-team'
+    | '/clinician'
     | '/dashboard'
     | '/devices'
+    | '/join'
     | '/login'
     | '/medications'
     | '/providers'
@@ -125,8 +161,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CareTeamRoute: typeof CareTeamRoute
+  ClinicianRoute: typeof ClinicianRoute
   DashboardRoute: typeof DashboardRoute
   DevicesRoute: typeof DevicesRoute
+  JoinRoute: typeof JoinRoute
   LoginRoute: typeof LoginRoute
   MedicationsRoute: typeof MedicationsRoute
   ProvidersRoute: typeof ProvidersRoute
@@ -164,6 +203,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/devices': {
       id: '/devices'
       path: '/devices'
@@ -176,6 +222,20 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clinician': {
+      id: '/clinician'
+      path: '/clinician'
+      fullPath: '/clinician'
+      preLoaderRoute: typeof ClinicianRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/care-team': {
+      id: '/care-team'
+      path: '/care-team'
+      fullPath: '/care-team'
+      preLoaderRoute: typeof CareTeamRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -197,8 +257,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CareTeamRoute: CareTeamRoute,
+  ClinicianRoute: ClinicianRoute,
   DashboardRoute: DashboardRoute,
   DevicesRoute: DevicesRoute,
+  JoinRoute: JoinRoute,
   LoginRoute: LoginRoute,
   MedicationsRoute: MedicationsRoute,
   ProvidersRoute: ProvidersRoute,
