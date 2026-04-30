@@ -13,10 +13,14 @@ import { Route as RiskRouteImport } from './routes/risk'
 import { Route as ProvidersRouteImport } from './routes/providers'
 import { Route as MedicationsRouteImport } from './routes/medications'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as JoinRouteImport } from './routes/join'
 import { Route as DevicesRouteImport } from './routes/devices'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ClinicianRouteImport } from './routes/clinician'
+import { Route as CareTeamRouteImport } from './routes/care-team'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiPublicIotDoseRouteImport } from './routes/api.public.iot.dose'
+import { Route as ApiPublicCronMissedDosesRouteImport } from './routes/api.public.cron.missed-doses'
 
 const RiskRoute = RiskRouteImport.update({
   id: '/risk',
@@ -38,6 +42,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DevicesRoute = DevicesRouteImport.update({
   id: '/devices',
   path: '/devices',
@@ -46,6 +55,16 @@ const DevicesRoute = DevicesRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClinicianRoute = ClinicianRouteImport.update({
+  id: '/clinician',
+  path: '/clinician',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CareTeamRoute = CareTeamRouteImport.update({
+  id: '/care-team',
+  path: '/care-team',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -58,79 +77,113 @@ const ApiPublicIotDoseRoute = ApiPublicIotDoseRouteImport.update({
   path: '/api/public/iot/dose',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCronMissedDosesRoute =
+  ApiPublicCronMissedDosesRouteImport.update({
+    id: '/api/public/cron/missed-doses',
+    path: '/api/public/cron/missed-doses',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/care-team': typeof CareTeamRoute
+  '/clinician': typeof ClinicianRoute
   '/dashboard': typeof DashboardRoute
   '/devices': typeof DevicesRoute
+  '/join': typeof JoinRoute
   '/login': typeof LoginRoute
   '/medications': typeof MedicationsRoute
   '/providers': typeof ProvidersRoute
   '/risk': typeof RiskRoute
+  '/api/public/cron/missed-doses': typeof ApiPublicCronMissedDosesRoute
   '/api/public/iot/dose': typeof ApiPublicIotDoseRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/care-team': typeof CareTeamRoute
+  '/clinician': typeof ClinicianRoute
   '/dashboard': typeof DashboardRoute
   '/devices': typeof DevicesRoute
+  '/join': typeof JoinRoute
   '/login': typeof LoginRoute
   '/medications': typeof MedicationsRoute
   '/providers': typeof ProvidersRoute
   '/risk': typeof RiskRoute
+  '/api/public/cron/missed-doses': typeof ApiPublicCronMissedDosesRoute
   '/api/public/iot/dose': typeof ApiPublicIotDoseRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/care-team': typeof CareTeamRoute
+  '/clinician': typeof ClinicianRoute
   '/dashboard': typeof DashboardRoute
   '/devices': typeof DevicesRoute
+  '/join': typeof JoinRoute
   '/login': typeof LoginRoute
   '/medications': typeof MedicationsRoute
   '/providers': typeof ProvidersRoute
   '/risk': typeof RiskRoute
+  '/api/public/cron/missed-doses': typeof ApiPublicCronMissedDosesRoute
   '/api/public/iot/dose': typeof ApiPublicIotDoseRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/care-team'
+    | '/clinician'
     | '/dashboard'
     | '/devices'
+    | '/join'
     | '/login'
     | '/medications'
     | '/providers'
     | '/risk'
+    | '/api/public/cron/missed-doses'
     | '/api/public/iot/dose'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/care-team'
+    | '/clinician'
     | '/dashboard'
     | '/devices'
+    | '/join'
     | '/login'
     | '/medications'
     | '/providers'
     | '/risk'
+    | '/api/public/cron/missed-doses'
     | '/api/public/iot/dose'
   id:
     | '__root__'
     | '/'
+    | '/care-team'
+    | '/clinician'
     | '/dashboard'
     | '/devices'
+    | '/join'
     | '/login'
     | '/medications'
     | '/providers'
     | '/risk'
+    | '/api/public/cron/missed-doses'
     | '/api/public/iot/dose'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CareTeamRoute: typeof CareTeamRoute
+  ClinicianRoute: typeof ClinicianRoute
   DashboardRoute: typeof DashboardRoute
   DevicesRoute: typeof DevicesRoute
+  JoinRoute: typeof JoinRoute
   LoginRoute: typeof LoginRoute
   MedicationsRoute: typeof MedicationsRoute
   ProvidersRoute: typeof ProvidersRoute
   RiskRoute: typeof RiskRoute
+  ApiPublicCronMissedDosesRoute: typeof ApiPublicCronMissedDosesRoute
   ApiPublicIotDoseRoute: typeof ApiPublicIotDoseRoute
 }
 
@@ -164,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/devices': {
       id: '/devices'
       path: '/devices'
@@ -176,6 +236,20 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clinician': {
+      id: '/clinician'
+      path: '/clinician'
+      fullPath: '/clinician'
+      preLoaderRoute: typeof ClinicianRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/care-team': {
+      id: '/care-team'
+      path: '/care-team'
+      fullPath: '/care-team'
+      preLoaderRoute: typeof CareTeamRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -192,19 +266,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicIotDoseRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/missed-doses': {
+      id: '/api/public/cron/missed-doses'
+      path: '/api/public/cron/missed-doses'
+      fullPath: '/api/public/cron/missed-doses'
+      preLoaderRoute: typeof ApiPublicCronMissedDosesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CareTeamRoute: CareTeamRoute,
+  ClinicianRoute: ClinicianRoute,
   DashboardRoute: DashboardRoute,
   DevicesRoute: DevicesRoute,
+  JoinRoute: JoinRoute,
   LoginRoute: LoginRoute,
   MedicationsRoute: MedicationsRoute,
   ProvidersRoute: ProvidersRoute,
   RiskRoute: RiskRoute,
+  ApiPublicCronMissedDosesRoute: ApiPublicCronMissedDosesRoute,
   ApiPublicIotDoseRoute: ApiPublicIotDoseRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
