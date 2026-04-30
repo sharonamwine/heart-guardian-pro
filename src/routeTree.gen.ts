@@ -20,6 +20,7 @@ import { Route as ClinicianRouteImport } from './routes/clinician'
 import { Route as CareTeamRouteImport } from './routes/care-team'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiPublicIotDoseRouteImport } from './routes/api.public.iot.dose'
+import { Route as ApiPublicCronMissedDosesRouteImport } from './routes/api.public.cron.missed-doses'
 
 const RiskRoute = RiskRouteImport.update({
   id: '/risk',
@@ -76,6 +77,12 @@ const ApiPublicIotDoseRoute = ApiPublicIotDoseRouteImport.update({
   path: '/api/public/iot/dose',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCronMissedDosesRoute =
+  ApiPublicCronMissedDosesRouteImport.update({
+    id: '/api/public/cron/missed-doses',
+    path: '/api/public/cron/missed-doses',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/medications': typeof MedicationsRoute
   '/providers': typeof ProvidersRoute
   '/risk': typeof RiskRoute
+  '/api/public/cron/missed-doses': typeof ApiPublicCronMissedDosesRoute
   '/api/public/iot/dose': typeof ApiPublicIotDoseRoute
 }
 export interface FileRoutesByTo {
@@ -101,6 +109,7 @@ export interface FileRoutesByTo {
   '/medications': typeof MedicationsRoute
   '/providers': typeof ProvidersRoute
   '/risk': typeof RiskRoute
+  '/api/public/cron/missed-doses': typeof ApiPublicCronMissedDosesRoute
   '/api/public/iot/dose': typeof ApiPublicIotDoseRoute
 }
 export interface FileRoutesById {
@@ -115,6 +124,7 @@ export interface FileRoutesById {
   '/medications': typeof MedicationsRoute
   '/providers': typeof ProvidersRoute
   '/risk': typeof RiskRoute
+  '/api/public/cron/missed-doses': typeof ApiPublicCronMissedDosesRoute
   '/api/public/iot/dose': typeof ApiPublicIotDoseRoute
 }
 export interface FileRouteTypes {
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/medications'
     | '/providers'
     | '/risk'
+    | '/api/public/cron/missed-doses'
     | '/api/public/iot/dose'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -143,6 +154,7 @@ export interface FileRouteTypes {
     | '/medications'
     | '/providers'
     | '/risk'
+    | '/api/public/cron/missed-doses'
     | '/api/public/iot/dose'
   id:
     | '__root__'
@@ -156,6 +168,7 @@ export interface FileRouteTypes {
     | '/medications'
     | '/providers'
     | '/risk'
+    | '/api/public/cron/missed-doses'
     | '/api/public/iot/dose'
   fileRoutesById: FileRoutesById
 }
@@ -170,6 +183,7 @@ export interface RootRouteChildren {
   MedicationsRoute: typeof MedicationsRoute
   ProvidersRoute: typeof ProvidersRoute
   RiskRoute: typeof RiskRoute
+  ApiPublicCronMissedDosesRoute: typeof ApiPublicCronMissedDosesRoute
   ApiPublicIotDoseRoute: typeof ApiPublicIotDoseRoute
 }
 
@@ -252,6 +266,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicIotDoseRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/missed-doses': {
+      id: '/api/public/cron/missed-doses'
+      path: '/api/public/cron/missed-doses'
+      fullPath: '/api/public/cron/missed-doses'
+      preLoaderRoute: typeof ApiPublicCronMissedDosesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -266,6 +287,7 @@ const rootRouteChildren: RootRouteChildren = {
   MedicationsRoute: MedicationsRoute,
   ProvidersRoute: ProvidersRoute,
   RiskRoute: RiskRoute,
+  ApiPublicCronMissedDosesRoute: ApiPublicCronMissedDosesRoute,
   ApiPublicIotDoseRoute: ApiPublicIotDoseRoute,
 }
 export const routeTree = rootRouteImport
