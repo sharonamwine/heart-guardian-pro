@@ -18,6 +18,7 @@ import { Route as DevicesRouteImport } from './routes/devices'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ClinicianRouteImport } from './routes/clinician'
 import { Route as CareTeamRouteImport } from './routes/care-team'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiPublicIotDoseRouteImport } from './routes/api.public.iot.dose'
 import { Route as ApiPublicCronMissedDosesRouteImport } from './routes/api.public.cron.missed-doses'
@@ -67,6 +68,11 @@ const CareTeamRoute = CareTeamRouteImport.update({
   path: '/care-team',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -86,6 +92,7 @@ const ApiPublicCronMissedDosesRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/care-team': typeof CareTeamRoute
   '/clinician': typeof ClinicianRoute
   '/dashboard': typeof DashboardRoute
@@ -100,6 +107,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/care-team': typeof CareTeamRoute
   '/clinician': typeof ClinicianRoute
   '/dashboard': typeof DashboardRoute
@@ -115,6 +123,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/care-team': typeof CareTeamRoute
   '/clinician': typeof ClinicianRoute
   '/dashboard': typeof DashboardRoute
@@ -131,6 +140,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/care-team'
     | '/clinician'
     | '/dashboard'
@@ -145,6 +155,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/care-team'
     | '/clinician'
     | '/dashboard'
@@ -159,6 +170,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/care-team'
     | '/clinician'
     | '/dashboard'
@@ -174,6 +186,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   CareTeamRoute: typeof CareTeamRoute
   ClinicianRoute: typeof ClinicianRoute
   DashboardRoute: typeof DashboardRoute
@@ -252,6 +265,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CareTeamRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -278,6 +298,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   CareTeamRoute: CareTeamRoute,
   ClinicianRoute: ClinicianRoute,
   DashboardRoute: DashboardRoute,
