@@ -12,7 +12,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/risk")({
-  head: () => ({ meta: [{ title: "Risk assessment — AdhereAI" }] }),
+  head: () => ({ meta: [{ title: "Risk assessment — CareSync HIV" }] }),
   component: RiskPage,
 });
 

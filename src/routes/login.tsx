@@ -12,8 +12,8 @@ type SignupRole = "patient" | "doctor" | "caregiver";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Sign in — AdhereAI" },
-      { name: "description", content: "Sign in to your AdhereAI HIV support account." },
+      { title: "Sign in — CareSync HIV" },
+      { name: "description", content: "Sign in to your CareSync HIV HIV support account." },
     ],
   }),
   component: LoginPage,
@@ -69,7 +69,7 @@ function LoginPage() {
           <div className="size-10 rounded-xl bg-gradient-care flex items-center justify-center text-primary-foreground shadow-glow">
             <Activity className="size-5" />
           </div>
-          <span className="font-display font-semibold text-lg">AdhereAI</span>
+          <span className="font-display font-semibold text-lg">CareSync HIV</span>
         </div>
 
         <div className="mt-12">

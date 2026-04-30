@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "AdhereAI — Smart HIV Support System" },
+      { title: "CareSync HIV — Smart HIV Support System" },
       {
         name: "description",
         content: "IoT medication monitoring, real-time adherence tracking, risk assessment, and care team support for people living with HIV.",
@@ -33,7 +33,7 @@ function Landing() {
             <div className="size-10 rounded-xl bg-white/15 backdrop-blur flex items-center justify-center">
               <Activity className="size-5" />
             </div>
-            <span className="font-display font-semibold text-lg">AdhereAI</span>
+            <span className="font-display font-semibold text-lg">CareSync HIV</span>
           </div>
           <h1 className="font-display text-3xl font-bold mt-10 leading-tight">
             Stay on treatment.

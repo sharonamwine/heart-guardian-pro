@@ -146,7 +146,7 @@ async function handler({ request }: { request: Request }) {
       for (const link of careTeam) {
         const clin = clinMap.get(link.clinician_id);
         const phone = clin?.phone;
-        const careMsg = `[AdhereAI] ${patient?.full_name ?? "Your patient"} missed a dose of ${med?.name ?? "medication"} (${scheduledTime}, ${minsLate} min late).`;
+        const careMsg = `[CareSync HIV] ${patient?.full_name ?? "Your patient"} missed a dose of ${med?.name ?? "medication"} (${scheduledTime}, ${minsLate} min late).`;
 
         if (phone && twilioKey && twilioFrom && lovableKey) {
           const result = await sendSms(phone, careMsg, twilioKey, twilioFrom, lovableKey);
