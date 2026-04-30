@@ -1,10 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, useCallback } from "react";
-import { Check, Clock, LogOut, Pill, Plus, ShieldCheck } from "lucide-react";
+import { Check, Clock, LogOut, Pill, Plus, ShieldCheck, Users } from "lucide-react";
 import { MobileShell } from "@/components/MobileShell";
 import { AdherenceRing } from "@/components/AdherenceRing";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
+import { useRole } from "@/lib/useRole";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureScheduledDoses } from "@/lib/schedule";
 import { computeRisk, type DoseRow, type EventRow, levelLabel } from "@/lib/adherence";
@@ -19,6 +20,7 @@ type MedMap = Record<string, { name: string; dosage: string }>;
 
 function Dashboard() {
   const { user, loading, signOut } = useAuth();
+  const { role, loading: roleLoading, isClinician } = useRole();
   const navigate = useNavigate();
   const [doses, setDoses] = useState<DoseRow[]>([]);
   const [events, setEvents] = useState<EventRow[]>([]);
@@ -28,6 +30,10 @@ function Dashboard() {
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/login" });
   }, [loading, user, navigate]);
+
+  useEffect(() => {
+    if (!roleLoading && isClinician) navigate({ to: "/clinician" });
+  }, [role, roleLoading, isClinician, navigate]);
 
   const load = useCallback(async () => {
     if (!user) return;
