@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/clinician")({
-  head: () => ({ meta: [{ title: "Care team — AdhereAI" }] }),
+  head: () => ({ meta: [{ title: "Care team — CareSync HIV" }] }),
   component: ClinicianDashboard,
 });
 

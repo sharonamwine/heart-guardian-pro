@@ -12,7 +12,7 @@ import { computeRisk, type DoseRow, type EventRow, levelLabel } from "@/lib/adhe
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — AdhereAI" }] }),
+  head: () => ({ meta: [{ title: "Dashboard — CareSync HIV" }] }),
   component: Dashboard,
 });
 

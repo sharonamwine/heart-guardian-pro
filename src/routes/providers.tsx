@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/providers")({
-  head: () => ({ meta: [{ title: "Care team — AdhereAI" }] }),
+  head: () => ({ meta: [{ title: "Care team — CareSync HIV" }] }),
   component: ProvidersPage,
 });
 

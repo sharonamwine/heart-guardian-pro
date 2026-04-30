@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/devices")({
-  head: () => ({ meta: [{ title: "IoT devices — AdhereAI" }] }),
+  head: () => ({ meta: [{ title: "IoT devices — CareSync HIV" }] }),
   component: DevicesPage,
 });
 

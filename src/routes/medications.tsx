@@ -10,7 +10,7 @@ import { ensureScheduledDoses } from "@/lib/schedule";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/medications")({
-  head: () => ({ meta: [{ title: "Medications — AdhereAI" }] }),
+  head: () => ({ meta: [{ title: "Medications — CareSync HIV" }] }),
   component: MedsPage,
 });
 

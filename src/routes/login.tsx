@@ -6,14 +6,15 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
+import { Logo } from "@/components/Logo";
 
 type SignupRole = "patient" | "doctor" | "caregiver";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Sign in — AdhereAI" },
-      { name: "description", content: "Sign in to your AdhereAI HIV support account." },
+      { title: "Sign in — CareSync HIV" },
+      { name: "description", content: "Sign in to your CareSync HIV HIV support account." },
     ],
   }),
   component: LoginPage,
@@ -65,11 +66,14 @@ function LoginPage() {
   return (
     <div className="min-h-screen bg-background flex justify-center">
       <div className="w-full max-w-[480px] min-h-screen flex flex-col px-6 pt-14 pb-10">
-        <div className="flex items-center gap-2">
-          <div className="size-10 rounded-xl bg-gradient-care flex items-center justify-center text-primary-foreground shadow-glow">
-            <Activity className="size-5" />
+        <div className="flex items-center gap-3">
+          <div className="size-11 rounded-xl bg-white p-1.5 shadow-glow flex items-center justify-center">
+            <Logo size={32} showText={false} />
           </div>
-          <span className="font-display font-semibold text-lg">AdhereAI</span>
+          <div className="leading-tight">
+            <div className="font-display font-semibold text-lg">CareSync HIV</div>
+            <div className="text-[11px] text-muted-foreground">Smart Adherence &amp; Treatment Support</div>
+          </div>
         </div>
 
         <div className="mt-12">

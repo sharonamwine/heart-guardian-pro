@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/admin")({
-  head: () => ({ meta: [{ title: "Admin — AdhereAI" }] }),
+  head: () => ({ meta: [{ title: "Admin — CareSync HIV" }] }),
   component: AdminDashboard,
 });
 
@@ -123,7 +123,7 @@ function AdminDashboard() {
               <Activity className="size-4" />
             </div>
             <div>
-              <div className="font-display font-semibold leading-tight">AdhereAI</div>
+              <div className="font-display font-semibold leading-tight">CareSync HIV</div>
               <div className="text-xs text-muted-foreground">Admin console</div>
             </div>
           </Link>
