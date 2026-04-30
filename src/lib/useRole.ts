@@ -41,5 +41,11 @@ export function useRole() {
     };
   }, [user, authLoading]);
 
-  return { role, loading: loading || authLoading, isClinician: role === "doctor" || role === "caregiver" };
+  return {
+    role,
+    loading: loading || authLoading,
+    isClinician: role === "doctor" || role === "caregiver",
+    isAdmin: role === "admin",
+  };
+}
 }
