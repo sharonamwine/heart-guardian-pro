@@ -42,7 +42,7 @@ export const Route = createRootRoute({
       { name: "twitter:title", content: "CareSync HIV — Smart Adherence & Treatment Support System" },
       { property: "og:description", content: "Smart Adherence & Treatment Support System for people living with HIV." },
       { name: "twitter:description", content: "Smart Adherence & Treatment Support System for people living with HIV." },
-      { rel: "icon", content: "/favicon.ico" },
+      
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b22fb755-b1d0-4455-8593-158ae0c1f7c5/id-preview-17465132--61011d28-15aa-4918-8a57-696b51e42a92.lovable.app-1777545846816.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b22fb755-b1d0-4455-8593-158ae0c1f7c5/id-preview-17465132--61011d28-15aa-4918-8a57-696b51e42a92.lovable.app-1777545846816.png" },
       { name: "twitter:card", content: "summary_large_image" },
