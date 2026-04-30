@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
+import { Logo } from "@/components/Logo";
 
 type SignupRole = "patient" | "doctor" | "caregiver";
 
