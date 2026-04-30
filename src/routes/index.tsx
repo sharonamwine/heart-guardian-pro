@@ -3,11 +3,12 @@ import { useEffect } from "react";
 import { Activity, HeartPulse, ShieldCheck, Smartphone } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/Logo";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "CareSync HIV — Smart HIV Support System" },
+      { title: "CareSync HIV — Smart Adherence & Treatment Support System" },
       {
         name: "description",
         content: "IoT medication monitoring, real-time adherence tracking, risk assessment, and care team support for people living with HIV.",
@@ -29,11 +30,14 @@ function Landing() {
     <div className="min-h-screen bg-background flex justify-center">
       <div className="w-full max-w-[480px] min-h-screen flex flex-col">
         <div className="bg-gradient-hero text-white px-6 pt-14 pb-16 rounded-b-[2rem]">
-          <div className="flex items-center gap-2">
-            <div className="size-10 rounded-xl bg-white/15 backdrop-blur flex items-center justify-center">
-              <Activity className="size-5" />
+          <div className="flex items-center gap-3">
+            <div className="size-11 rounded-xl bg-white p-1.5 shadow-soft flex items-center justify-center">
+              <Logo size={32} showText={false} />
             </div>
-            <span className="font-display font-semibold text-lg">CareSync HIV</span>
+            <div className="leading-tight">
+              <div className="font-display font-semibold text-lg">CareSync HIV</div>
+              <div className="text-[11px] text-white/75">Smart Adherence &amp; Treatment Support</div>
+            </div>
           </div>
           <h1 className="font-display text-3xl font-bold mt-10 leading-tight">
             Stay on treatment.
@@ -41,8 +45,8 @@ function Landing() {
             Stay in control.
           </h1>
           <p className="text-white/75 mt-3 text-sm leading-relaxed">
-            A smart HIV support system with IoT medication monitoring, real-time
-            adherence tracking, and AI-powered risk assessment.
+            Smart adherence and treatment support — medication monitoring, real-time
+            tracking, and AI-powered risk assessment, all in one place.
           </p>
         </div>
 
