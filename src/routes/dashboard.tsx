@@ -32,7 +32,9 @@ function Dashboard() {
   }, [loading, user, navigate]);
 
   useEffect(() => {
-    if (!roleLoading && isClinician) navigate({ to: "/clinician" });
+    if (roleLoading) return;
+    if (role === "admin") navigate({ to: "/admin" });
+    else if (isClinician) navigate({ to: "/clinician" });
   }, [role, roleLoading, isClinician, navigate]);
 
   const load = useCallback(async () => {
