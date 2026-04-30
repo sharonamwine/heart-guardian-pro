@@ -1,11 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Activity, Mail, Lock } from "lucide-react";
+import { Activity, Mail, Lock, HeartPulse, Stethoscope, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
+
+type SignupRole = "patient" | "doctor" | "caregiver";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -24,6 +26,7 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState<SignupRole>("patient");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -41,7 +44,7 @@ function LoginPage() {
           password,
           options: {
             emailRedirectTo: `${window.location.origin}/dashboard`,
-            data: { full_name: name || email.split("@")[0] },
+            data: { full_name: name || email.split("@")[0], role },
           },
         });
         if (error) throw error;
