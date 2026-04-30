@@ -48,4 +48,3 @@ export function useRole() {
     isAdmin: role === "admin",
   };
 }
-}
