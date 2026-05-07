@@ -238,6 +238,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           baseline_cd4: number | null
           baseline_viral_load: number | null
           created_at: string
@@ -245,11 +246,13 @@ export type Database = {
           diagnosis_date: string | null
           full_name: string | null
           id: string
+          notification_prefs: Json
           phone: string | null
           timezone: string | null
           updated_at: string
         }
         Insert: {
+          avatar_url?: string | null
           baseline_cd4?: number | null
           baseline_viral_load?: number | null
           created_at?: string
@@ -257,11 +260,13 @@ export type Database = {
           diagnosis_date?: string | null
           full_name?: string | null
           id: string
+          notification_prefs?: Json
           phone?: string | null
           timezone?: string | null
           updated_at?: string
         }
         Update: {
+          avatar_url?: string | null
           baseline_cd4?: number | null
           baseline_viral_load?: number | null
           created_at?: string
@@ -269,6 +274,7 @@ export type Database = {
           diagnosis_date?: string | null
           full_name?: string | null
           id?: string
+          notification_prefs?: Json
           phone?: string | null
           timezone?: string | null
           updated_at?: string
