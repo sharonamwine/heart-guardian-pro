@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, useCallback } from "react";
-import { Check, Clock, LogOut, Pill, Plus, ShieldCheck, Users } from "lucide-react";
+import { Check, Clock, Pill, Plus, Settings as SettingsIcon, ShieldCheck, Users } from "lucide-react";
 import { MobileShell } from "@/components/MobileShell";
 import { AdherenceRing } from "@/components/AdherenceRing";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/dashboard")({
 type MedMap = Record<string, { name: string; dosage: string }>;
 
 function Dashboard() {
-  const { user, loading, signOut } = useAuth();
+  const { user, loading } = useAuth();
   const { role, loading: roleLoading, isClinician } = useRole();
   const navigate = useNavigate();
   const [doses, setDoses] = useState<DoseRow[]>([]);
@@ -116,16 +116,13 @@ function Dashboard() {
               {profile?.full_name ?? user?.email?.split("@")[0] ?? "Friend"}
             </h1>
           </div>
-          <button
-            onClick={async () => {
-              await signOut();
-              navigate({ to: "/" });
-            }}
+          <Link
+            to="/settings"
             className="size-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-smooth"
-            aria-label="Sign out"
+            aria-label="Account settings"
           >
-            <LogOut className="size-4" />
-          </button>
+            <SettingsIcon className="size-4" />
+          </Link>
         </div>
 
         <div className="mt-6 flex items-center gap-5">
