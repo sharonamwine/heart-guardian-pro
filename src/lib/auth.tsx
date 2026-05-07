@@ -16,9 +16,13 @@ const Ctx = createContext<AuthState | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [stayLoggedIn, setStayLoggedInState] = useState<boolean>(true);
 
   useEffect(() => {
-    // Subscribe FIRST, then hydrate
+    try {
+      const v = localStorage.getItem("stayLoggedIn");
+      if (v !== null) setStayLoggedInState(v === "true");
+    } catch { /* ignore */ }
     const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
       setSession(newSession);
       setLoading(false);
@@ -30,16 +34,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => sub.subscription.unsubscribe();
   }, []);
 
+  const setStayLoggedIn = (v: boolean) => {
+    setStayLoggedInState(v);
+    try { localStorage.setItem("stayLoggedIn", String(v)); } catch { /* ignore */ }
+  };
+
+  // If user disables "Stay logged in", clear session when the tab closes
+  useEffect(() => {
+    if (stayLoggedIn) return;
+    const handler = () => { void supabase.auth.signOut(); };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [stayLoggedIn]);
+
   const value = useMemo<AuthState>(
     () => ({
       user: session?.user ?? null,
       session,
       loading,
+      stayLoggedIn,
+      setStayLoggedIn,
       signOut: async () => {
         await supabase.auth.signOut();
       },
     }),
-    [session, loading],
+    [session, loading, stayLoggedIn],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
