@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, Pill, ShieldAlert, Users, type LucideIcon } from "lucide-react";
+import { Home, Pill, ShieldAlert, User, Users, type LucideIcon } from "lucide-react";
 import { type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -8,6 +8,7 @@ const tabs: { to: string; label: string; icon: LucideIcon }[] = [
   { to: "/medications", label: "Meds", icon: Pill },
   { to: "/risk", label: "Risk", icon: ShieldAlert },
   { to: "/providers", label: "Care", icon: Users },
+  { to: "/settings", label: "Account", icon: User },
 ];
 
 export function MobileShell({ children }: { children: ReactNode }) {
