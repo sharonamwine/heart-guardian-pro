@@ -16,6 +16,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useAuth } from "@/lib/auth";
 import { useTheme } from "@/lib/theme";
 import { supabase } from "@/integrations/supabase/client";
@@ -55,6 +65,8 @@ function SettingsPage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
+  const [signOutOpen, setSignOutOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/login" });
@@ -154,8 +166,17 @@ function SettingsPage() {
   };
 
   const handleSignOut = async () => {
-    await signOut();
-    navigate({ to: "/" });
+    setSigningOut(true);
+    try {
+      await signOut();
+      toast.success("Signed out");
+      navigate({ to: "/login" });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Sign out failed");
+    } finally {
+      setSigningOut(false);
+      setSignOutOpen(false);
+    }
   };
 
   const initials =
@@ -313,12 +334,36 @@ function SettingsPage() {
         </Section>
 
         <Button
-          onClick={handleSignOut}
+          onClick={() => setSignOutOpen(true)}
           variant="destructive"
           className="w-full h-12 rounded-xl"
         >
           <LogOut className="size-4 mr-2" /> Sign out
         </Button>
+
+        <AlertDialog open={signOutOpen} onOpenChange={setSignOutOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Sign out of CareSync HIV?</AlertDialogTitle>
+              <AlertDialogDescription>
+                You'll need to sign in again to access your medications, reminders, and care team.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={signingOut}>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={(e) => {
+                  e.preventDefault();
+                  void handleSignOut();
+                }}
+                disabled={signingOut}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                {signingOut ? "Signing out…" : "Sign out"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         <p className="text-center text-[11px] text-muted-foreground pb-2">
           CareSync HIV · Smart Adherence & Treatment Support
