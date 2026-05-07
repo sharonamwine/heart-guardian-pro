@@ -6,6 +6,8 @@ type AuthState = {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  stayLoggedIn: boolean;
+  setStayLoggedIn: (v: boolean) => void;
   signOut: () => Promise<void>;
 };
 
