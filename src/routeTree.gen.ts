@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as RiskRouteImport } from './routes/risk'
 import { Route as ProvidersRouteImport } from './routes/providers'
 import { Route as MedicationsRouteImport } from './routes/medications'
@@ -23,6 +24,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiPublicIotDoseRouteImport } from './routes/api.public.iot.dose'
 import { Route as ApiPublicCronMissedDosesRouteImport } from './routes/api.public.cron.missed-doses'
 
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RiskRoute = RiskRouteImport.update({
   id: '/risk',
   path: '/risk',
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/medications': typeof MedicationsRoute
   '/providers': typeof ProvidersRoute
   '/risk': typeof RiskRoute
+  '/settings': typeof SettingsRoute
   '/api/public/cron/missed-doses': typeof ApiPublicCronMissedDosesRoute
   '/api/public/iot/dose': typeof ApiPublicIotDoseRoute
 }
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/medications': typeof MedicationsRoute
   '/providers': typeof ProvidersRoute
   '/risk': typeof RiskRoute
+  '/settings': typeof SettingsRoute
   '/api/public/cron/missed-doses': typeof ApiPublicCronMissedDosesRoute
   '/api/public/iot/dose': typeof ApiPublicIotDoseRoute
 }
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/medications': typeof MedicationsRoute
   '/providers': typeof ProvidersRoute
   '/risk': typeof RiskRoute
+  '/settings': typeof SettingsRoute
   '/api/public/cron/missed-doses': typeof ApiPublicCronMissedDosesRoute
   '/api/public/iot/dose': typeof ApiPublicIotDoseRoute
 }
@@ -150,6 +159,7 @@ export interface FileRouteTypes {
     | '/medications'
     | '/providers'
     | '/risk'
+    | '/settings'
     | '/api/public/cron/missed-doses'
     | '/api/public/iot/dose'
   fileRoutesByTo: FileRoutesByTo
@@ -165,6 +175,7 @@ export interface FileRouteTypes {
     | '/medications'
     | '/providers'
     | '/risk'
+    | '/settings'
     | '/api/public/cron/missed-doses'
     | '/api/public/iot/dose'
   id:
@@ -180,6 +191,7 @@ export interface FileRouteTypes {
     | '/medications'
     | '/providers'
     | '/risk'
+    | '/settings'
     | '/api/public/cron/missed-doses'
     | '/api/public/iot/dose'
   fileRoutesById: FileRoutesById
@@ -196,12 +208,20 @@ export interface RootRouteChildren {
   MedicationsRoute: typeof MedicationsRoute
   ProvidersRoute: typeof ProvidersRoute
   RiskRoute: typeof RiskRoute
+  SettingsRoute: typeof SettingsRoute
   ApiPublicCronMissedDosesRoute: typeof ApiPublicCronMissedDosesRoute
   ApiPublicIotDoseRoute: typeof ApiPublicIotDoseRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/risk': {
       id: '/risk'
       path: '/risk'
@@ -308,9 +328,19 @@ const rootRouteChildren: RootRouteChildren = {
   MedicationsRoute: MedicationsRoute,
   ProvidersRoute: ProvidersRoute,
   RiskRoute: RiskRoute,
+  SettingsRoute: SettingsRoute,
   ApiPublicCronMissedDosesRoute: ApiPublicCronMissedDosesRoute,
   ApiPublicIotDoseRoute: ApiPublicIotDoseRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
