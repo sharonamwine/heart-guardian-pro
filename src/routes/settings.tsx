@@ -334,12 +334,36 @@ function SettingsPage() {
         </Section>
 
         <Button
-          onClick={handleSignOut}
+          onClick={() => setSignOutOpen(true)}
           variant="destructive"
           className="w-full h-12 rounded-xl"
         >
           <LogOut className="size-4 mr-2" /> Sign out
         </Button>
+
+        <AlertDialog open={signOutOpen} onOpenChange={setSignOutOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Sign out of CareSync HIV?</AlertDialogTitle>
+              <AlertDialogDescription>
+                You'll need to sign in again to access your medications, reminders, and care team.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={signingOut}>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={(e) => {
+                  e.preventDefault();
+                  void handleSignOut();
+                }}
+                disabled={signingOut}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                {signingOut ? "Signing out…" : "Sign out"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         <p className="text-center text-[11px] text-muted-foreground pb-2">
           CareSync HIV · Smart Adherence & Treatment Support
