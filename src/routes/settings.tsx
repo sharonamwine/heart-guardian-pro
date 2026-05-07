@@ -166,8 +166,17 @@ function SettingsPage() {
   };
 
   const handleSignOut = async () => {
-    await signOut();
-    navigate({ to: "/" });
+    setSigningOut(true);
+    try {
+      await signOut();
+      toast.success("Signed out");
+      navigate({ to: "/login" });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Sign out failed");
+    } finally {
+      setSigningOut(false);
+      setSignOutOpen(false);
+    }
   };
 
   const initials =
